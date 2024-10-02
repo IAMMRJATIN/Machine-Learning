@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Text Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background-color: #62b3ff98;
+        }
+        h1 {
+            color: #333;
+        }
+        .box{
+            height: auto;
+            width: auto;
+            position: relative;
+            padding: 20px;
+            align-items: center;
+            background-color: #333;
+            border-radius: 2px solid #dd2323;
+
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 400px;
+            border: 2px solid #140000;
+            border-radius: 5px;
+        }
+        button {
+            align-items: center;
+            padding: 10px;
+            width: 200px;
+            background-color: #007BFF;
+            color: white;
+            border: 1px ;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Gemini AI Text Generator</h1>
+    <div class="box">
+        <form id="promptForm">
+            <input type="text" name="prompt" id="prompt" placeholder="Enter your prompt" required>
+            <button type="submit">Submit you    Text</button>
+        </form>
+    
+        <div class="response" id="responseContainer" style="display: none;">
+            <h2>Gemini's reply:</h2>
+            <p id="generatedText"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('promptForm').addEventListener('submit', function(event) {
+    event.preventDefault();  // Prevent form from submitting normally
+    const prompt = document.getElementById('prompt').value;
+
+    if (prompt.trim() === "") {
+        alert("Please enter a prompt."); // Alert if the input is empty
+        return; // Stop the function if input is empty
+    }
+
+    // Send POST request to Flask server
+    fetch('/generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            'prompt': prompt
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Display the generated text
+        document.getElementById('generatedText').textContent = data.response;
+        document.getElementById('responseContainer').style.display = 'block';
+    })
+    .catch(error => console.error('Error:', error));
+});
+    </script>
+
+</body>
+</html>
